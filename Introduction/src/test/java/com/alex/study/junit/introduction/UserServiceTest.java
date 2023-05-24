@@ -2,13 +2,18 @@ package com.alex.study.junit.introduction;
 
 import com.alex.study.junit.introduction.service.UserService;
 import com.alex.study.junit.introduction.service.dto.User;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 //@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag("fast")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserServiceTest {
 
     private UserService userService;
@@ -32,10 +37,54 @@ class UserServiceTest {
     }
 
     @Test
+    @Order(2)
+    void trowExeptionIfUsernameOrPasswordIsNull() {
+        try {
+            userService.login(null, "dimmme");
+            fail("login should trown exeption on null UsrName");
+        } catch (IllegalArgumentException ex) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("test trowsExeption If User name")
+    void trowsExeptionIfUsernameOrPasswordIsNull() {
+        assertThrows(IllegalArgumentException.class, ()-> userService.login(null, "dimmme"));
+        assertThrows(IllegalArgumentException.class, ()-> userService.login("dimmme", null));
+        // если так
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, ()-> userService.login(null,
+                        "dimmme")),
+                () -> assertThrows(IllegalArgumentException.class, ()-> userService.login("dimmme", null))
+        );
+    }
+
+    @Test
+    @Tag("login")
+    void myTrowsExeptionIfUsernameOrPasswordIsNull() {
+        assertAll(
+                () -> {
+                    var exeption = assertThrows(IllegalArgumentException.class,
+                            ()-> userService.login(null,
+                            "dimmme"));
+                    assertThat(exeption.getMessage()).isEqualTo("userName or password is Null");
+                },
+                () -> assertThrows(IllegalArgumentException.class, ()-> userService.login("dimmme", null))
+        );
+
+    }
+
+    @Test
     void userEmptyIfNoUserAdded() {
         System.out.println("userEmptyIfNoUserAdded " + this);
         var users = userService.getAll();
         assertTrue(users.isEmpty(), ()-> "User list should empty");
+        // asserj
+        assertThat(users).hasSize(1);
+        // hamcrest
+        MatcherAssert.assertThat(users, IsEmptyCollection.empty());
     }
 
     @Test
