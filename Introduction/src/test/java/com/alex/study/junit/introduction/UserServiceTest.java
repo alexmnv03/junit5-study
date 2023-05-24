@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 //@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Tag("fast")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserServiceTest {
 
     private UserService userService;
@@ -35,6 +37,7 @@ class UserServiceTest {
     }
 
     @Test
+    @Order(2)
     void trowExeptionIfUsernameOrPasswordIsNull() {
         try {
             userService.login(null, "dimmme");
@@ -45,6 +48,8 @@ class UserServiceTest {
     }
 
     @Test
+    @Order(1)
+    @DisplayName("test trowsExeption If User name")
     void trowsExeptionIfUsernameOrPasswordIsNull() {
         assertThrows(IllegalArgumentException.class, ()-> userService.login(null, "dimmme"));
         assertThrows(IllegalArgumentException.class, ()-> userService.login("dimmme", null));
@@ -57,6 +62,7 @@ class UserServiceTest {
     }
 
     @Test
+    @Tag("login")
     void myTrowsExeptionIfUsernameOrPasswordIsNull() {
         assertAll(
                 () -> {
