@@ -1,11 +1,15 @@
 package com.alex.study.junit.introduction;
 
+import com.alex.study.junit.introduction.extention.GlobalExtention;
+import com.alex.study.junit.introduction.extention.PostProcessingExtention;
 import com.alex.study.junit.introduction.service.UserService;
 import com.alex.study.junit.introduction.service.dto.User;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("fast")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith({GlobalExtention.class,
+        PostProcessingExtention.class})
 class UserServiceTest {
 
     private UserService userService;
@@ -111,5 +117,11 @@ class UserServiceTest {
 //    void closeConnectionPull(){
 //        System.out.println("After all " + this);
 //    }
+
+    @ParameterizedTest
+    void loginParametratedTest(String userName, String password){
+        userService.add(new User());
+        var myUser = userService.login(userName, password);
+    }
 
 }
