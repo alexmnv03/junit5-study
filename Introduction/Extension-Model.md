@@ -34,5 +34,10 @@ GlobalExtention.class})
 4. Extension Handling
 Это кодга мы обрабатываем Exeption которые появляются в наших тестовых методах
 Создадим класс TrowableExtension
+И добавим в метод trowExeptionIfUsernameOrPasswordIsNull Exeption: IOException
+
+
+
+
 
 
