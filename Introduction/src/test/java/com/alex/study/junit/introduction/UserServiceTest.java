@@ -1,5 +1,6 @@
 package com.alex.study.junit.introduction;
 
+import com.alex.study.junit.introduction.extention.ConditionalExtention;
 import com.alex.study.junit.introduction.extention.GlobalExtention;
 import com.alex.study.junit.introduction.extention.PostProcessingExtention;
 import com.alex.study.junit.introduction.service.UserService;
@@ -19,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("fast")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith({GlobalExtention.class,
-        PostProcessingExtention.class})
+        PostProcessingExtention.class,
+        ConditionalExtention.class})
 class UserServiceTest {
 
     private UserService userService;

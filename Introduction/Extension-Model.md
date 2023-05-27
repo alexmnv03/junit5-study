@@ -31,5 +31,8 @@ GlobalExtention.class})
 3. Conditionl test excution
 
 
-4. dfds
+4. Extension Handling
+Это кодга мы обрабатываем Exeption которые появляются в наших тестовых методах
+Создадим класс TrowableExtension
+
 
