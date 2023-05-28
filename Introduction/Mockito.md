@@ -12,5 +12,23 @@
 5. Spy - если мы что то меняем, то он превращается в mock, а если нет, то это реальный объект
 
 Подлкючим библиотеку Mockito
+mockito-core
 
 ## Mock
+Добавим код в метод shouldDeleteExistedUser
+
+## Упрсотим работу с моками добавив зависимость
+mockito-junit-jupiter
+Это позволит нам добавить MockitoExtension
+Теперь мы можем ставить на объектами аннотации:
+```
+    @Mock
+    private UserService userService;
+```
+или
+```
+    @Spy
+    private UserService userService;
+```
+А классы которые мы хотим тестировать ставим аннотацию InjectMocks
+Теперь можно закоментировать код в методе prepare
