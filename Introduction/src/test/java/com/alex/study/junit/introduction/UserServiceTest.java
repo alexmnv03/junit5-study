@@ -1,5 +1,6 @@
 package com.alex.study.junit.introduction;
 
+import com.alex.study.junit.introduction.dao.UserDao;
 import com.alex.study.junit.introduction.extention.ConditionalExtention;
 import com.alex.study.junit.introduction.extention.GlobalExtention;
 import com.alex.study.junit.introduction.extention.PostProcessingExtention;
@@ -12,6 +13,8 @@ import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
@@ -25,10 +28,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith({GlobalExtention.class,
         PostProcessingExtention.class,
         ConditionalExtention.class,
-        TrowableExtension.class})
+        MockitoExtension.class
+//        TrowableExtension.class
+})
 class UserServiceTest {
 
+    @Mock
     private UserService userService;
+    @InjectMocks
+    private UserDao userDao;
+
 
     @BeforeAll
     static void init(){
@@ -43,8 +52,47 @@ class UserServiceTest {
     @BeforeEach
     void prepare() {
         System.out.println("Before Each " + this);
-        userService = new UserService();
+//        userService = new UserService();
+        //Создаем прокси объект
+        this.userDao = Mockito.mock(UserDao.class);
+        this.userService = new UserService(userDao);
 
+        // вот как использовать spy
+        this.userDao = Mockito.spy(new UserDao());
+
+    }
+
+    @Test
+    void shouldDeleteExistedUser(){
+        User user = new User(1,"Ival", "123");
+        userService.add(user);
+        // Создадим Stub
+        // Этот вариант более универсальный и всегда работает, т.к. мы тут не вызываем метод у
+        // реального объекта, т.е. этого метода может у него и не быть
+        Mockito.doReturn(true).when(userDao).delete(user.getId());
+        //или используя Dummy
+        Mockito.doReturn(true).when(userDao).delete(Mockito.any());
+        // Другой вариант, но он не всегда работает напрмер в режиме Spy, т.к. в этом случает
+        // данный метода у обхекта должен быть обязательно, т.к. он вызывается
+        Mockito.when(userDao.delete(user.getId())).thenReturn(true);
+        // Зато в этом вариате мы можем указывать срузу несколкьо значений, пекрвый вызов вернет
+        // true, а второй false
+        Mockito.when(userDao.delete(user.getId()))
+                .thenReturn(true)
+                .thenReturn(false);
+        var deleteResult = userService.delete(user.getId());
+        assertThat(deleteResult).isTrue();
+
+        // Проверим, что метод delete был вызван один раз
+        Mockito.verify(userDao).delete(user.getId());
+        // Проверим, что метод delete был вызван три раза
+        Mockito.verify(userDao, Mockito.times(3)).delete(user.getId());
+
+        // Если мы хотим проверить с каким параметром был вызван наш метод, то
+        var argumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        Mockito.verify(userDao, Mockito.times(3)).delete(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue()).isEqualTo(user.getId());
+        // Таким образом мы можем перхватытвать все аргументы методов
     }
 
     @Test
@@ -60,6 +108,7 @@ class UserServiceTest {
             assertTrue(true);
         }
     }
+
 
     @Test
     @Order(1)
