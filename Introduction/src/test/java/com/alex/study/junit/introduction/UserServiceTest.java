@@ -1,5 +1,6 @@
 package com.alex.study.junit.introduction;
 
+import com.alex.study.junit.introduction.dao.UserDao;
 import com.alex.study.junit.introduction.extention.ConditionalExtention;
 import com.alex.study.junit.introduction.extention.GlobalExtention;
 import com.alex.study.junit.introduction.extention.PostProcessingExtention;
@@ -12,6 +13,7 @@ import org.hamcrest.collection.IsMapContaining;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 
@@ -24,11 +26,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith({GlobalExtention.class,
         PostProcessingExtention.class,
-        ConditionalExtention.class,
-        TrowableExtension.class})
+        ConditionalExtention.class
+//        TrowableExtension.class
+})
 class UserServiceTest {
 
     private UserService userService;
+    private UserDao userDao;
+
 
     @BeforeAll
     static void init(){
@@ -43,8 +48,30 @@ class UserServiceTest {
     @BeforeEach
     void prepare() {
         System.out.println("Before Each " + this);
-        userService = new UserService();
+//        userService = new UserService();
+        //Создаем прокси объект
+        this.userDao = Mockito.mock(UserDao.class);
+        this.userService = new UserService(userDao);
 
+    }
+
+    void shouldDeleteExistedUser(){
+        User user = new User(1,"Ival", "123");
+        userService.add(user);
+        // Создадим Stub
+        // Этот вариант более универсальный и всегда работает
+        Mockito.doReturn(true).when(userDao).delete(user.getId());
+        //или используя Dummy
+        Mockito.doReturn(true).when(userDao).delete(Mockito.any());
+        // Другой вариант, но он не всегда работает
+        Mockito.when(userDao.delete(user.getId())).thenReturn(true);
+        // Зато в этом вариате мы можем указывать срузу несколкьо значений, пекрвый вызов вернет
+        // true, а второй false
+        Mockito.when(userDao.delete(user.getId()))
+                .thenReturn(true)
+                .thenReturn(false);
+        var deleteResult = userService.delete(user.getId());
+        assertThat(deleteResult).isTrue();
     }
 
     @Test
@@ -60,6 +87,7 @@ class UserServiceTest {
             assertTrue(true);
         }
     }
+
 
     @Test
     @Order(1)
