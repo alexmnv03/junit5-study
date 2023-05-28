@@ -1,5 +1,6 @@
 package com.alex.study.junit.introduction.service;
 
+import com.alex.study.junit.introduction.dao.UserDao;
 import com.alex.study.junit.introduction.service.dto.User;
 
 import java.util.ArrayList;
@@ -9,10 +10,23 @@ import java.util.Optional;
 
 public class UserService {
 
+    private UserDao userDao;
+
+    public UserService() {
+    }
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
     private List<User> users = new ArrayList<>();
 
     public List<User> getAll() {
         return users;
+    }
+
+    public boolean delete(Integer userId) {
+        return userDao.delete(userId);
     }
 
     public boolean add(User user) {
