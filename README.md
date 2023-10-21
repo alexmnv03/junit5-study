@@ -35,9 +35,7 @@ junit5 состоит из нескольких проектов:
 ```js
 junit-jupiter-params
 ```
-[1. жизненный цикл тестов](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/HELP.md)
-
-[2. Extension Model](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Extension-Model.md)
-
-[3. Mockito](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Mockito.md)
+1. [жизненный цикл тестов](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/HELP.md)
+2. [Extension Model](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Extension-Model.md)
+3. [Mockito](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Mockito.md)
 
