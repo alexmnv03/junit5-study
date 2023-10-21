@@ -30,8 +30,14 @@ junit5 состоит из нескольких проектов:
 
 Мы будем использовать зависимость junit-jupiter-engine, т.к. она включает все что нужно
 
-# Параметризрванные тесты
+# Параметризованные тесты
 Чтобы их использовать подключим следующую зависимость
 ```js
 junit-jupiter-params
 ```
+### Содержание
+1. [жизненный цикл тестов](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/HELP.md)
+2. [Extension Model](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Extension-Model.md)
+3. [Mockito](https://github.com/alexmnv03/junit5-study/blob/develop/Introduction/Mockito.md)
+4. [файлы с примерами](https://github.com/alexmnv03/junit5-study/tree/develop/Introduction/src/test/java/com/alex/study/junit/introduction)
+
